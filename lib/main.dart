@@ -55,13 +55,13 @@ class _QuizPageState extends State<QuizPage> {
       quizBrain.nextQuestion();
     } else {
       int score = quizBrain.getScore();
-      int totalQuestion = quizBrain.getTotalQuestions();
+      int totalQuestions = quizBrain.getTotalQuestions();
 
       Alert(
         context: context,
         type: quizBrain.hasWin() ? AlertType.success : AlertType.error,
         title: 'Quiz finished',
-        desc: 'You have made $score/$totalQuestion',
+        desc: 'You have made $score/$totalQuestions',
         closeFunction: this.resetGame,
         style: AlertStyle(
           isOverlayTapDismiss: false,
