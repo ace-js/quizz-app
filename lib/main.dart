@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:quizz_app/quiz_brain.dart';
 
@@ -9,6 +10,10 @@ void main() => runApp(QuizApp());
 class QuizApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -34,8 +39,10 @@ class _QuizPageState extends State<QuizPage> {
 
   void checkAnswer(answer) {
     Icon icon;
-    if (answer == quizBrain.getCorrectAnswer())
+    if (answer == quizBrain.getCorrectAnswer()) {
+      quizBrain.incrementScore();
       icon = Icon(Icons.check, color: Colors.green);
+    }
     else {
       icon = Icon(Icons.close, color: Colors.red);
     }
@@ -47,23 +54,28 @@ class _QuizPageState extends State<QuizPage> {
     if (quizBrain.hasMoreQuestion()) {
       quizBrain.nextQuestion();
     } else {
+      int score = quizBrain.getScore();
+      int totalQuestion = quizBrain.getTotalQuestions();
+
       Alert(
         context: context,
-        type: AlertType.success,
-        title: "Quiz finished",
-        desc: "You have finished the quiz",
+        type: quizBrain.hasWin() ? AlertType.success : AlertType.error,
+        title: 'Quiz finished',
+        desc: 'You have made $score/$totalQuestion',
         closeFunction: this.resetGame,
         style: AlertStyle(
-          isCloseButton: false,
           isOverlayTapDismiss: false,
         ),
         buttons: [
           DialogButton(
             child: Text(
-              "Ok",
+              'Ok',
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
-            onPressed: this.resetGame,
+            onPressed: () {
+              this.resetGame();
+              Navigator.pop(context);
+            },
             width: 120,
           )
         ],
@@ -75,8 +87,7 @@ class _QuizPageState extends State<QuizPage> {
     setState(() {
       scoreKeeper = [];
     });
-    quizBrain.resetQuestionBank();
-    Navigator.pop(context); // Close Alert
+    quizBrain.resetGame();// Close Alert
   }
 
   @override
