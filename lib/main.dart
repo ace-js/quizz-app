@@ -74,7 +74,7 @@ class _QuizPageState extends State<QuizPage> {
             ),
             onPressed: () {
               this.resetGame();
-              Navigator.pop(context);
+              Navigator.pop(context);// Close Alert Widget
             },
             width: 120,
           )
@@ -87,7 +87,7 @@ class _QuizPageState extends State<QuizPage> {
     setState(() {
       scoreKeeper = [];
     });
-    quizBrain.resetGame();// Close Alert
+    quizBrain.resetGame();
   }
 
   @override
